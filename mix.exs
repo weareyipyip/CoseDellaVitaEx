@@ -22,7 +22,8 @@ defmodule CoseDellaVitaEx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-
+      {:absinthe, "~> 1.7"},
+      {:ecto, "~> 3.8"}
     ]
   end
 
