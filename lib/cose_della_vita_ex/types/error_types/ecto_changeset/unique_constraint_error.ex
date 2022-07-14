@@ -14,7 +14,7 @@ defmodule CoseDellaVitaEx.ErrorTypes.UniqueConstraintError do
   @desc @message
   object :unique_constraint_error do
     @desc "Fields that must be unique together."
-    field :fields, non_null(list_of(:string))
+    field(:fields, non_null(list_of(:string)))
     interface(:error)
     import_fields(:error)
   end

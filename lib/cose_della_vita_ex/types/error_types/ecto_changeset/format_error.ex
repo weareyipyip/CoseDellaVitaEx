@@ -14,7 +14,7 @@ defmodule CoseDellaVitaEx.ErrorTypes.FormatError do
   @desc @message
   object :format_error do
     @desc "Regex (PCRE) that the value must match."
-    field :expected_format, non_null(:string)
+    field(:expected_format, non_null(:string))
     interface(:error)
     import_fields(:error)
   end

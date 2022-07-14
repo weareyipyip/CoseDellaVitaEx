@@ -14,7 +14,7 @@ defmodule CoseDellaVitaEx.ErrorTypes.RequireOneOfError do
   @desc @message
   object :require_one_of_error do
     @desc "List of fields."
-    field :fields, list_of(non_null(:string))
+    field(:fields, list_of(non_null(:string)))
     interface(:error)
     import_fields(:error)
   end

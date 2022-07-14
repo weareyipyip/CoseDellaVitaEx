@@ -22,9 +22,9 @@ defmodule CoseDellaVitaEx.ErrorTypes.LengthError do
   @desc @message
   object :length_error do
     @desc "The type of comparison that was made with the reference length."
-    field :comparison_type, non_null(:length_comparison_type)
+    field(:comparison_type, non_null(:length_comparison_type))
     @desc "The reference length that the field was compared with."
-    field :reference, non_null(:integer)
+    field(:reference, non_null(:integer))
     interface(:error)
     import_fields(:error)
   end

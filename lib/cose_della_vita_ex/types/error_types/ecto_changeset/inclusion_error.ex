@@ -14,7 +14,7 @@ defmodule CoseDellaVitaEx.ErrorTypes.InclusionError do
   @desc @message
   object :inclusion_error do
     @desc "List of acceptable values."
-    field :inclusion_list, list_of(non_null(:string))
+    field(:inclusion_list, list_of(non_null(:string)))
     interface(:error)
     import_fields(:error)
   end

@@ -30,9 +30,9 @@ defmodule CoseDellaVitaEx.ErrorTypes.NumberError do
   @desc @message
   object :number_error do
     @desc "The type of comparison that was made with the reference number."
-    field :comparison_type, non_null(:number_comparison_type)
+    field(:comparison_type, non_null(:number_comparison_type))
     @desc "The reference number that the field was compared with."
-    field :reference, non_null(:float)
+    field(:reference, non_null(:float))
     interface(:error)
     import_fields(:error)
   end

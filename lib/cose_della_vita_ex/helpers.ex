@@ -65,8 +65,20 @@ defmodule CoseDellaVitaEx.Helpers do
         ]
       }
   """
-  @spec add_changeset_errors(map, Changeset.t(), (String.t(), map() -> struct()), [String.t()], map()) :: map
-  def add_changeset_errors(response, changeset, module_mapper, base_path \\ [], error_field_overrides \\ %{})
+  @spec add_changeset_errors(
+          map,
+          Changeset.t(),
+          (String.t(), map() -> struct()),
+          [String.t()],
+          map()
+        ) :: map
+  def add_changeset_errors(
+        response,
+        changeset,
+        module_mapper,
+        base_path \\ [],
+        error_field_overrides \\ %{}
+      )
 
   def add_changeset_errors(
         %{errors: errors} = response,
@@ -77,7 +89,9 @@ defmodule CoseDellaVitaEx.Helpers do
       ) do
     changeset_errors =
       changeset
-      |> Changeset.traverse_errors(&ErrorTypes.graphql_changeset_error_traverser(&1, module_mapper))
+      |> Changeset.traverse_errors(
+        &ErrorTypes.graphql_changeset_error_traverser(&1, module_mapper)
+      )
       |> to_absinthe_errors(error_field_overrides, base_path)
 
     %{response | errors: errors ++ changeset_errors}
