@@ -1,0 +1,55 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start containers",
+      "type": "shell",
+      "command": "ELIXIR_VERSION=1.13 docker-compose up -d"
+    },
+    {
+      "dependsOn": ["Start containers"],
+      "label": "Shell",
+      "type": "shell",
+      "command": "docker-compose exec elixir /bin/sh"
+    },
+    {
+      "dependsOn": ["Start containers"],
+      "label": "IEx",
+      "type": "shell",
+      "command": "docker-compose exec elixir iex -S mix",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "dependsOn": ["Start containers"],
+      "label": "Test",
+      "type": "shell",
+      "command": "docker-compose exec elixir mix test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "dependsOn": ["Start containers"],
+      "label": "Test watch",
+      "type": "shell",
+      "command": "docker-compose exec elixir mix test.watch",
+      "group": "test"
+    },
+    {
+      "dependsOn": ["Start containers"],
+      "label": "Install dependencies",
+      "type": "shell",
+      "command": "docker-compose exec elixir mix do local.hex --force, local.rebar --force, deps.get"
+    },
+    {
+      "dependsOn": ["Start containers"],
+      "label": "Update dependencies",
+      "type": "shell",
+      "command": "docker-compose exec elixir mix deps.update --all"
+    }
+  ]
+}
