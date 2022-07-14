@@ -74,11 +74,47 @@ defmodule CoseDellaVitaEx.ErrorTypes do
   @doc """
   Translate changeset errors into `CoseDellaVitaEx.ErrorTypes.*` structs that are translated into specific, typed GraphQL data-errors.
   """
-  @spec graphql_changeset_error_traverser({binary, keyword | map}) :: struct()
-  def graphql_changeset_error_traverser({msg, opts}) do
+  @spec graphql_changeset_error_traverser({binary, keyword | map}, (String.t(), map() -> struct())) :: struct()
+  def graphql_changeset_error_traverser({msg, opts}, module_mapper) do
     message = ErrorHelpers.translate_error({msg, opts})
     opts = Map.new(opts)
-    error_module(opts, message)
+    module_mapper.(opts, message)
+  end
+
+  defmacro default_module_mapper(opts, message, clauses) do
+    [do: clauses] = clauses
+
+    extra_clauses =
+      quote do
+        {%{custom_validation: :invalid_token}, message} -> %TokenInvalidError{message: "The token is #{message}"}
+        {%{custom_validation: :password_match}, _message} -> %WrongPasswordError{}
+        {%{custom_validation: :require_one_of, fields: fields}, _message} -> %RequireOneOfError{fields: fields}
+        {%{validation: :length, kind: kind, count: count}, message} -> %LengthError{comparison_type: kind, reference: count, message: message}
+        {%{validation: :number, kind: kind, number: number}, message} -> %NumberError{comparison_type: kind, reference: number * 1.0, message: message}
+        {%{validation: :required}, _message} -> %RequiredError{}
+        {%{validation: :inclusion}, _message} -> %InclusionError{}
+        {%{validation: :assoc}, _message} -> %AssocError{}
+        {%{validation: :unsafe_unique}, _message} -> %UniqueConstraintError{}
+        {%{validation: :format}, _message} -> %FormatError{}
+        {%{stale: true}, _message} -> %OptimisticLockingError{}
+        {%{constraint: :unique}, _message} -> %UniqueConstraintError{}
+        {%{constraint: :assoc}, _message} -> %NotFoundError{}
+        {%{constraint: :foreign}, _message} -> %NotFoundError{}
+        {opts, message} ->
+          Logger.warning(
+            "Unknown changeset validation type, defaulting to a generic GraphQL error. Defining a specific error type will improve the API's type strength and usability. Full opts: #{inspect(opts)}"
+          )
+
+          %GenericError{message: message}
+      end
+
+    quote do
+      require Logger
+
+      case {unquote(opts), unquote(message)} do
+        unquote clauses ++ extra_clauses
+      end
+    end
   end
 
   ###########
@@ -88,39 +124,4 @@ defmodule CoseDellaVitaEx.ErrorTypes do
   defp resolve(%{error_type: error_type}, _), do: error_type
   defp resolve(%{path: _, message: _}, _), do: :generic_error
   defp resolve(_, _), do: nil
-
-  defp error_module(%{custom_validation: :invalid_token}, message),
-    do: %TokenInvalidError{message: "The token is #{message}"}
-
-  defp error_module(%{custom_validation: :password_match}, _message), do: %WrongPasswordError{}
-
-  defp error_module(%{custom_validation: :require_one_of, fields: fields}, _message),
-    do: %RequireOneOfError{fields: fields}
-
-  defp error_module(%{validation: :length, kind: kind, count: count}, message),
-    do: %LengthError{comparison_type: kind, reference: count, message: message}
-
-  # we cast the number to a float, because graphql wants either an integer or
-  # float scalar type and creating a new scalar type that can be both seems unnecessary
-  defp error_module(%{validation: :number, kind: kind, number: number}, message),
-    do: %NumberError{comparison_type: kind, reference: number * 1.0, message: message}
-
-  defp error_module(%{validation: :required}, _message), do: %RequiredError{}
-  defp error_module(%{validation: :inclusion}, _message), do: %InclusionError{}
-  defp error_module(%{validation: :assoc}, _message), do: %AssocError{}
-  defp error_module(%{validation: :unsafe_unique}, _message), do: %UniqueConstraintError{}
-  defp error_module(%{validation: :format}, _message), do: %FormatError{}
-  defp error_module(%{stale: true}, _message), do: %OptimisticLockingError{}
-
-  defp error_module(%{constraint: :unique}, _message), do: %UniqueConstraintError{}
-  defp error_module(%{constraint: :assoc}, _message), do: %NotFoundError{}
-  defp error_module(%{constraint: :foreign}, _message), do: %NotFoundError{}
-
-  defp error_module(opts, message) do
-    Logger.warning(
-      "Unknown changeset validation type, defaulting to a generic GraphQL error. Defining a specific error type will improve the API's type strength and usability. Full opts: #{inspect(opts)}"
-    )
-
-    %GenericError{message: message}
-  end
 end
