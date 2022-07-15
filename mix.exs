@@ -3,7 +3,7 @@ defmodule CoseDellaVitaEx.MixProject do
 
   def project do
     [
-      app: :case_della_vita_ex,
+      app: :cose_della_vita_ex,
       version: "0.0.0+development",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
