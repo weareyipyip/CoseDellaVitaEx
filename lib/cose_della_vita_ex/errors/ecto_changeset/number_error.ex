@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.NumberError do
+defmodule CoseDellaVitaEx.Errors.NumberError do
   @message "The field's number has the wrong value."
   @moduledoc """
   #{@message}

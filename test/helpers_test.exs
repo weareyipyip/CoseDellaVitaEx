@@ -2,8 +2,8 @@ defmodule CoseDellaVitaEx.HelpersTest do
   use ExUnit.Case
 
   alias CoseDellaVitaEx.Helpers
-  alias CoseDellaVitaEx.ErrorTypes
-  alias CoseDellaVitaEx.ErrorTypes.{GenericError, LengthError, NumberError, RequiredError}
+  alias CoseDellaVitaEx.Types.ErrorTypes
+  alias CoseDellaVitaEx.Errors.{GenericError, LengthError, NumberError, RequiredError}
 
   import Helpers
   import ErrorTypes

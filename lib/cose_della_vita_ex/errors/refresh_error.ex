@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.RefreshError do
+defmodule CoseDellaVitaEx.Errors.RefreshError do
   @message "The session could not be refreshed. Either the user was not found or the user is inactive."
   @moduledoc """
   #{@message}

@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.LengthError do
+defmodule CoseDellaVitaEx.Errors.LengthError do
   @message "The field has the wrong length."
   @moduledoc """
   #{@message}

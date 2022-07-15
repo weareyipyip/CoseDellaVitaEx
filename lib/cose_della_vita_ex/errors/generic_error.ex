@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.GenericError do
+defmodule CoseDellaVitaEx.Errors.GenericError do
   @message "The default implementation of interface Error."
   @moduledoc """
   #{@message}

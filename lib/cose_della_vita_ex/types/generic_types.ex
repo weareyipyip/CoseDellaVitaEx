@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.GenericTypes do
+defmodule CoseDellaVitaEx.Types.GenericTypes do
   @moduledoc """
   Generic Absinthe types.
   """

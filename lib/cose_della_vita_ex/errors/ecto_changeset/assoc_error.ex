@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.AssocError do
+defmodule CoseDellaVitaEx.Errors.AssocError do
   @message "An associated entity is invalid, meaning that you are trying to remove or replace an associated entity, but this is not supported."
   @moduledoc """
   #{@message}

@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.OptimisticLockingError do
+defmodule CoseDellaVitaEx.Errors.OptimisticLockingError do
   @message "The entity is stale, reload the entity and retry the update. This error should only occur when clients opt-in to optimistic locking by specifying a value for lockVersion in a mutation's input object."
   @moduledoc """
   #{@message}

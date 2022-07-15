@@ -4,7 +4,7 @@ defmodule CoseDellaVitaEx.Helpers do
   """
 
   alias Absinthe.Adapter.LanguageConventions
-  alias CoseDellaVitaEx.ErrorTypes
+  alias CoseDellaVitaEx.Types.ErrorTypes
   alias Ecto.Changeset
   require Logger
 
@@ -30,7 +30,7 @@ defmodule CoseDellaVitaEx.Helpers do
     do: add_data_error(response, Map.new(error))
 
   @doc """
-  Translate changeset errors into `CoseDellaVitaEx.ErrorTypes.*` structs that are translated into specific, typed GraphQL data-errors. Unrecognized errors default to `CoseDellaVitaEx.ErrorTypes.GenericError`.
+  Translate changeset errors into `CoseDellaVitaEx.Errors.*` structs that are translated into specific, typed GraphQL data-errors. Unrecognized errors default to `CoseDellaVitaEx.Errors.GenericError`.
   The `:errors` field is added to the response if it does not exist.
   Supports nested changeset errors, which are added with flattened keys, for example "user.posts".
   Keys are converted to camelCase when they are added to the errors field.
@@ -134,7 +134,7 @@ defmodule CoseDellaVitaEx.Helpers do
   # Example output from Changeset.traverse_errors(&ErrorTypes.graphql_changeset_error_traverser/1)
   # %{
   #   something: [
-  #     %CoseDellaVitaEx.ErrorTypes.GenericError{
+  #     %CoseDellaVitaEx.Errors.GenericError{
   #       error_type: :generic_error,
   #       message: "is invalid",
   #       path: nil
@@ -144,7 +144,7 @@ defmodule CoseDellaVitaEx.Helpers do
   #     bi_cycles: [
   #       %{
   #         wheel_count: [
-  #           %CoseDellaVitaEx.ErrorTypes.GenericError{
+  #           %CoseDellaVitaEx.Errors.GenericError{
   #             error_type: :generic_error,
   #             message: "must be greater than 3",
   #             path: nil
@@ -153,7 +153,7 @@ defmodule CoseDellaVitaEx.Helpers do
   #       }
   #     ],
   #     email: [
-  #       %CoseDellaVitaEx.ErrorTypes.LengthError{
+  #       %CoseDellaVitaEx.Errors.LengthError{
   #         count: 1,
   #         error_type: :length_error,
   #         kind: :max,

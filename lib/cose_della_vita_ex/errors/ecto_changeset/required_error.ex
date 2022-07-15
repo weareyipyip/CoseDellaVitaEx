@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.RequiredError do
+defmodule CoseDellaVitaEx.Errors.RequiredError do
   @message "This field is required."
   @moduledoc """
   #{@message}

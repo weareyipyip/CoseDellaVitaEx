@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.TokenInvalidError do
+defmodule CoseDellaVitaEx.Errors.TokenInvalidError do
   @message "The provided token parameter is invalid, meaning it could not be decoded, its signature component is wrong or it has expired."
   @moduledoc """
   #{@message}

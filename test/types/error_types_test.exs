@@ -1,7 +1,7 @@
-defmodule CoseDellaVitaEx.ErrorTypesTest do
+defmodule CoseDellaVitaEx.Types.ErrorTypesTest do
   use ExUnit.Case
 
-  alias CoseDellaVitaEx.ErrorTypes
+  alias CoseDellaVitaEx.Types.ErrorTypes
 
   import ErrorTypes
 

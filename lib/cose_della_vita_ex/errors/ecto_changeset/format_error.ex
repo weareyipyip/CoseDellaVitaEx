@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.FormatError do
+defmodule CoseDellaVitaEx.Errors.FormatError do
   @message "The field has the wrong format."
   @moduledoc """
   #{@message}

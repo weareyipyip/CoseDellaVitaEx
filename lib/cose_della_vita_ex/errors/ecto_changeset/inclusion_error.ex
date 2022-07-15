@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.InclusionError do
+defmodule CoseDellaVitaEx.Errors.InclusionError do
   @message "The field does not part of predefind set of options"
   @moduledoc """
   #{@message}

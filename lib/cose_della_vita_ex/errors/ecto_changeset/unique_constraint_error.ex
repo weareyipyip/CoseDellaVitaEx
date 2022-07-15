@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.UniqueConstraintError do
+defmodule CoseDellaVitaEx.Errors.UniqueConstraintError do
   @message "The field must be unique (or unique in combination with something else)."
   @moduledoc """
   #{@message}

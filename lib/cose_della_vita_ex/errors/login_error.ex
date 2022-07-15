@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.LoginError do
+defmodule CoseDellaVitaEx.Errors.LoginError do
   @message "A session could not be created. Either the user was not found, the user is inactive or the password is wrong."
   @moduledoc """
   #{@message}

@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.NotFoundError do
+defmodule CoseDellaVitaEx.Errors.NotFoundError do
   @message "The specified entity could not be found."
   @moduledoc """
   #{@message}

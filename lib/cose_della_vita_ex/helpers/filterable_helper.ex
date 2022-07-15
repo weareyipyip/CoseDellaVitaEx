@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.Utils.FilterableType do
+defmodule CoseDellaVitaEx.Helpers.FilterableHelpers do
   @moduledoc """
   Use this module to add functions `default_order/0` and `default_filters/0` to an Absinthe type module.
   Requires a `:type` option, and that module attributes `@default_order` and `@default_filters` have been set.

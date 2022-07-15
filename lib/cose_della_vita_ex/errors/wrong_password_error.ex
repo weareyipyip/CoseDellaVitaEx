@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.WrongPasswordError do
+defmodule CoseDellaVitaEx.Errors.WrongPasswordError do
   @message "The password is wrong."
   @moduledoc """
   #{@message}

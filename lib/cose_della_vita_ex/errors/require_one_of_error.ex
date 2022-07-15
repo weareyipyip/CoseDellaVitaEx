@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.ErrorTypes.RequireOneOfError do
+defmodule CoseDellaVitaEx.Errors.RequireOneOfError do
   @message "At least one of the fields is required."
   @moduledoc """
   #{@message}

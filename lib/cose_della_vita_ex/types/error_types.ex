@@ -1,12 +1,12 @@
-defmodule CoseDellaVitaEx.ErrorTypes do
+defmodule CoseDellaVitaEx.Types.ErrorTypes do
   @moduledoc """
   Error types. When implemented, makes it possible for clients to query what exactly went wrong
   """
   use Absinthe.Schema.Notation
-  alias CoseDellaVitaEx.Utils.ErrorHelpers
+  alias CoseDellaVitaEx.Helpers.ErrorHelpers
   require Logger
 
-  alias __MODULE__.{
+  alias CoseDellaVitaEx.Errors.{
     AssocError,
     FormatError,
     GenericError,
@@ -82,7 +82,7 @@ defmodule CoseDellaVitaEx.ErrorTypes do
   #########
 
   @doc """
-  Translate changeset errors into `CoseDellaVitaEx.ErrorTypes.*` structs that are translated into specific, typed GraphQL data-errors.
+  Translate changeset errors into `CoseDellaVitaEx.Errors.*` structs that are translated into specific, typed GraphQL data-errors.
 
   ## Examples / doctests
 

@@ -1,4 +1,4 @@
-defmodule CoseDellaVitaEx.Utils.ErrorHelpers do
+defmodule CoseDellaVitaEx.Helpers.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
