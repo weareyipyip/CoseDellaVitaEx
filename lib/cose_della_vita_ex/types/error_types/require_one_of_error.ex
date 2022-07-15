@@ -3,7 +3,7 @@ defmodule CoseDellaVitaEx.ErrorTypes.RequireOneOfError do
   @moduledoc """
   #{@message}
 
-  Absinthe type is `:require_one_of_error`.
+  Absinthe type is `:require_one_of_error`. Field `:fields` must be set by the calling resolver.
   """
   use Absinthe.Schema.Notation
 

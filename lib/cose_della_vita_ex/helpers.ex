@@ -75,7 +75,7 @@ defmodule CoseDellaVitaEx.Helpers do
   def add_changeset_errors(
         response,
         changeset,
-        module_mapper,
+        error_mapper,
         base_path \\ [],
         error_field_overrides \\ %{}
       )
@@ -83,25 +83,25 @@ defmodule CoseDellaVitaEx.Helpers do
   def add_changeset_errors(
         %{errors: errors} = response,
         changeset,
-        module_mapper,
+        error_mapper,
         base_path,
         error_field_overrides
       ) do
     changeset_errors =
       changeset
       |> Changeset.traverse_errors(
-        &ErrorTypes.graphql_changeset_error_traverser(&1, module_mapper)
+        &ErrorTypes.graphql_changeset_error_traverser(&1, error_mapper)
       )
       |> to_absinthe_errors(error_field_overrides, base_path)
 
     %{response | errors: errors ++ changeset_errors}
   end
 
-  def add_changeset_errors(response, changeset, module_mapper, base_path, error_field_overrides),
+  def add_changeset_errors(response, changeset, error_mapper, base_path, error_field_overrides),
     do:
       response
       |> Map.put(:errors, [])
-      |> add_changeset_errors(changeset, module_mapper, base_path, error_field_overrides)
+      |> add_changeset_errors(changeset, error_mapper, base_path, error_field_overrides)
 
   @doc """
   Sets the `:success` flag of a response to true if there are no errors, and adds an empty error list if there is no errors field.

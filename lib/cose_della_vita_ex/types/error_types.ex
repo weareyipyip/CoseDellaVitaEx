@@ -78,14 +78,37 @@ defmodule CoseDellaVitaEx.ErrorTypes do
           {binary, keyword | map},
           (String.t(), map() -> struct())
         ) :: struct()
-  def graphql_changeset_error_traverser({msg, opts}, module_mapper) do
+  def graphql_changeset_error_traverser({msg, opts}, error_mapper) do
     message = ErrorHelpers.translate_error({msg, opts})
     opts = Map.new(opts)
-    module_mapper.(opts, message)
+    error_mapper.(opts, message)
   end
 
-  defmacro default_module_mapper(opts, message, clauses) do
-    [do: clauses] = clauses
+  @doc """
+  Generate a default error mapper with optional overrides.
+  The error mapper is used to convert Ecto Changeset errors to GraphQL types.
+
+  # Examples
+
+      defmodule MyApp.ErrorMapper do
+        import CodeDellaVitaEx.ErrorTypes
+
+        def map(opts, message) do
+          default_error_mapper(opts, message)
+        end
+
+        def map_custom(opts, message) do
+          {%{custom_validation: :something}, message} -> %SomeCustomError{message: message}
+        end
+    end
+  """
+  defmacro default_error_mapper(opts, message, overrides \\ []) do
+    clauses =
+      case overrides do
+        [do: {:__block__, _, overrides}] -> overrides
+        [do: overrides] -> overrides
+        _ -> []
+      end
 
     extra_clauses =
       quote do

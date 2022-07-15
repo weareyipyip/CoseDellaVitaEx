@@ -23,8 +23,8 @@ defmodule CoseDellaVitaEx.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.21", only: [:dev, :test], runtime: false},
-      {:absinthe, "~> 1.7"},
-      {:ecto, "~> 3.8"}
+      {:absinthe, "~> 1.0"},
+      {:ecto, "~> 3.0"}
     ]
   end
 
