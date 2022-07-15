@@ -8,7 +8,22 @@ defmodule CoseDellaVitaEx.MixProject do
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      elixirc_paths: elixirc_paths(Mix.env())
+      elixirc_paths: elixirc_paths(Mix.env()),
+      description: """
+      Library with helper modules for developing an API with Absinthe.
+      """,
+      package: [
+        licenses: ["apache-2.0"],
+        links: %{github: "https://github.com/weareyipyip/CoseDellaVitaEx"},
+        source_url: "https://github.com/weareyipyip/CoseDellaVitaEx"
+      ],
+      source_url: "https://github.com/weareyipyip/CoseDellaVitaEx",
+      name: "CoseDellaVitaEx",
+      docs: [
+        source_ref: "main",
+        extras: ["./README.md"],
+        main: "readme"
+      ]
     ]
   end
 
