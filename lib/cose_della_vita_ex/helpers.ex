@@ -39,8 +39,7 @@ defmodule CoseDellaVitaEx.Helpers do
   ## Examples / doctests
 
       # adds to existing errors
-      iex> error_mapper = fn opts, msg -> default_error_mapper(opts, msg) end
-      iex> add_changeset_errors(%{errors: ["boom"]}, TestSchema.changeset(%{}), error_mapper)
+      iex> add_changeset_errors(%{errors: ["boom"]}, TestSchema.changeset(%{}), &TestErrorMapper.map/2)
       %{errors: ["boom", %RequiredError{message: "This field is required.", path: ["user"], error_type: :required_error}]}
 
       # adds :errors field
@@ -49,8 +48,7 @@ defmodule CoseDellaVitaEx.Helpers do
       # transforms field names to camelCase
       iex> cs = %{user: %{email: "ab", bi_cycles: [%{wheel_count: 1}]}, something: 3} |> TestSchema.changeset()
       iex> error_overrides = %{{:generic_error, ~w(input something)} => %{message: "overriden message!"}}
-      iex> error_mapper = fn opts, msg -> default_error_mapper(opts, msg) end
-      iex> add_changeset_errors(%{}, cs, error_mapper, ~w(input), error_overrides)
+      iex> add_changeset_errors(%{}, cs, &TestErrorMapper.map/2, ~w(input), error_overrides)
       %{
         errors: [
           %LengthError{comparison_type: :max, error_type: :length_error, message: "should be at most 1 character(s)", path: ["input", "user", "email"], reference: 1},
@@ -58,6 +56,12 @@ defmodule CoseDellaVitaEx.Helpers do
           %GenericError{message: "overriden message!", path: ["input", "something"], error_type: :generic_error}
         ]
       }
+
+      # custom validation
+      iex> cs = %{user: %{email: "a", bicycles: %{wheel_count: 4}}} |> TestSchema.changeset()
+      iex> cs = cs |> add_error(:user, "something", custom_validation: :something)
+      iex> add_changeset_errors(%{}, cs, &TestErrorMapper.map/2)
+      %{errors: [%TestError{error_type: :test_error, message: "something", path: ["user"]}]}
   """
   @spec add_changeset_errors(
           map,

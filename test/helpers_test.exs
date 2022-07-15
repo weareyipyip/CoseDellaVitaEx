@@ -2,11 +2,11 @@ defmodule CoseDellaVitaEx.HelpersTest do
   use ExUnit.Case
 
   alias CoseDellaVitaEx.Helpers
-  alias CoseDellaVitaEx.Types.ErrorTypes
   alias CoseDellaVitaEx.Errors.{GenericError, LengthError, NumberError, RequiredError}
+  alias Ecto.Changeset
 
   import Helpers
-  import ErrorTypes
+  import Changeset
 
   defmodule TestSchema do
     import Ecto.Changeset
@@ -44,6 +44,17 @@ defmodule CoseDellaVitaEx.HelpersTest do
       |> cast(params, [:wheel_count])
       |> validate_number(:wheel_count, greater_than: 3)
     end
+  end
+
+  defmodule TestError do
+    defstruct [:path, :message, error_type: :test_error]
+  end
+
+  defmodule TestErrorMapper do
+    @behaviour CoseDellaVitaEx.ErrorMapper
+
+    def map(%{custom_validation: :something}, message), do: %TestError{message: message}
+    def map(opts, message), do: CoseDellaVitaEx.ErrorMapper.map_default(opts, message)
   end
 
   doctest Helpers

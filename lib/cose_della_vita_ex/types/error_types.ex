@@ -6,22 +6,6 @@ defmodule CoseDellaVitaEx.Types.ErrorTypes do
   alias CoseDellaVitaEx.Helpers.ErrorHelpers
   require Logger
 
-  alias CoseDellaVitaEx.Errors.{
-    AssocError,
-    FormatError,
-    GenericError,
-    InclusionError,
-    LengthError,
-    NumberError,
-    NotFoundError,
-    OptimisticLockingError,
-    RequiredError,
-    TokenInvalidError,
-    UniqueConstraintError,
-    WrongPasswordError,
-    RequireOneOfError
-  }
-
   @desc "Fields shared by all (domain-related) data-level errors."
   interface :error do
     @desc "Path to the field that caused the error."
@@ -96,83 +80,6 @@ defmodule CoseDellaVitaEx.Types.ErrorTypes do
     message = ErrorHelpers.translate_error({msg, opts})
     opts = Map.new(opts)
     error_mapper.(opts, message)
-  end
-
-  @doc """
-  Generate a default error mapper with optional overrides.
-  The error mapper is used to convert Ecto Changeset errors to GraphQL types.
-
-  ## Examples / doctests
-
-  See `CosaDellaVitaEx.Helpers.add_changeset_errors/5`.
-  """
-  defmacro default_error_mapper(opts, message, overrides \\ []) do
-    clauses =
-      case overrides do
-        [do: {:__block__, _, overrides}] -> overrides
-        [do: overrides] -> overrides
-        _ -> []
-      end
-
-    extra_clauses =
-      quote do
-        {%{custom_validation: :invalid_token}, message} ->
-          %TokenInvalidError{message: "The token is #{message}"}
-
-        {%{custom_validation: :password_match}, _message} ->
-          %WrongPasswordError{}
-
-        {%{custom_validation: :require_one_of, fields: fields}, _message} ->
-          %RequireOneOfError{fields: fields}
-
-        {%{validation: :length, kind: kind, count: count}, message} ->
-          %LengthError{comparison_type: kind, reference: count, message: message}
-
-        {%{validation: :number, kind: kind, number: number}, message} ->
-          %NumberError{comparison_type: kind, reference: number * 1.0, message: message}
-
-        {%{validation: :required}, _message} ->
-          %RequiredError{}
-
-        {%{validation: :inclusion}, _message} ->
-          %InclusionError{}
-
-        {%{validation: :assoc}, _message} ->
-          %AssocError{}
-
-        {%{validation: :unsafe_unique}, _message} ->
-          %UniqueConstraintError{}
-
-        {%{validation: :format}, _message} ->
-          %FormatError{}
-
-        {%{stale: true}, _message} ->
-          %OptimisticLockingError{}
-
-        {%{constraint: :unique}, _message} ->
-          %UniqueConstraintError{}
-
-        {%{constraint: :assoc}, _message} ->
-          %NotFoundError{}
-
-        {%{constraint: :foreign}, _message} ->
-          %NotFoundError{}
-
-        {opts, message} ->
-          Logger.warning(
-            "Unknown changeset validation type, defaulting to a generic GraphQL error. Defining a specific error type will improve the API's type strength and usability. Full opts: #{inspect(opts)}"
-          )
-
-          %GenericError{message: message}
-      end
-
-    quote do
-      require Logger
-
-      case {unquote(opts), unquote(message)} do
-        unquote(clauses ++ extra_clauses)
-      end
-    end
   end
 
   ###########

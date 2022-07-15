@@ -5,8 +5,8 @@ defmodule CoseDellaVitaEx.Schema do
 
   defmacro __using__(_opts) do
     quote do
-      import_types(CoseDellaVitaEx.GenericTypes)
-      import_types(CoseDellaVitaEx.ErrorTypes)
+      import_types(CoseDellaVitaEx.Types.GenericTypes)
+      import_types(CoseDellaVitaEx.Types.ErrorTypes)
       import_types(CoseDellaVitaEx.Errors.AssocError)
       import_types(CoseDellaVitaEx.Errors.FormatError)
       import_types(CoseDellaVitaEx.Errors.GenericError)
