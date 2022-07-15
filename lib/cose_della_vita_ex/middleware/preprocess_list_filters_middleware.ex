@@ -2,6 +2,9 @@ defmodule CoseDellaVitaEx.Middleware.PreprocessListFiltersMiddleware do
   @moduledoc """
   Map the GraphQL API format for `orderBy` filter input fields to the internal format
   of `Ecto.Query.order_by/3`.
+
+  ## Examples / doctests
+
       iex> arguments = %{filters: %{order_by: [%{field: :name, direction: :asc}]}}
       iex> resolution = %Resolution{arguments: arguments}
       iex> resolution = PreprocessListFiltersMiddleware.call(resolution, :filters)

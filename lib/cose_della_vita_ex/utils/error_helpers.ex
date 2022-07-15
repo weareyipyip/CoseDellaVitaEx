@@ -1,10 +1,15 @@
-defmodule CoseDellaVitaEx.ErrorHelpers do
+defmodule CoseDellaVitaEx.Utils.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
 
   @doc """
   Translates an error message.
+
+  ## Examples / doctests
+
+      iex> translate_error({"should be at least %{count} characters", [count: 3]})
+      "should be at least 3 characters"
   """
   def translate_error({msg, opts}) do
     # Because the error messages we show in our forms and APIs

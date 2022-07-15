@@ -10,7 +10,9 @@ defmodule CoseDellaVitaEx.Helpers do
 
   @doc """
   Add an `:error`-type error to a data response (so the error will not end up in the top-level errors).
+
   ## Examples / doctests
+
       iex> add_data_error(message: "does not exist", path: [])
       %{errors: [%{message: "does not exist", path: []}]}
       iex> add_data_error(%{status: :error}, message: "does not exist", path: [])
@@ -33,30 +35,22 @@ defmodule CoseDellaVitaEx.Helpers do
   Supports nested changeset errors, which are added with flattened keys, for example "user.posts".
   Keys are converted to camelCase when they are added to the errors field.
   Additionally, it is possible to override fields of the error structs, matching on the struct's `:error_type` field and the error's path.
+
   ## Examples / doctests
-      @primary_key false
-      embedded_schema do
-        field(:something, :string)
-        embeds_one :user, User, primary_key: false do
-          field(:email, :string)
-          embeds_many :bi_cycles, Bicycle, primary_key: false do
-            field(:wheel_count, :integer)
-          end
-        end
-      end
-      def changeset(params) do
-        # validates all fields as required, casts fields and embeds etc...
-      end
+
       # adds to existing errors
-      iex> add_changeset_errors(%{errors: ["boom"]}, changeset(%{}))
+      iex> error_mapper = fn opts, msg -> default_error_mapper(opts, msg) end
+      iex> add_changeset_errors(%{errors: ["boom"]}, TestSchema.changeset(%{}), error_mapper)
       %{errors: ["boom", %RequiredError{message: "This field is required.", path: ["user"], error_type: :required_error}]}
+
       # adds :errors field
       # supports nested changeset errors
       # supports multiple errors for the same field
       # transforms field names to camelCase
-      iex> cs = %{user: %{email: "ab", bi_cycles: [%{wheel_count: 1}]}, something: 3} |> changeset()
+      iex> cs = %{user: %{email: "ab", bi_cycles: [%{wheel_count: 1}]}, something: 3} |> TestSchema.changeset()
       iex> error_overrides = %{{:generic_error, ~w(input something)} => %{message: "overriden message!"}}
-      iex> add_changeset_errors(%{}, cs, ~w(input), error_overrides)
+      iex> error_mapper = fn opts, msg -> default_error_mapper(opts, msg) end
+      iex> add_changeset_errors(%{}, cs, error_mapper, ~w(input), error_overrides)
       %{
         errors: [
           %LengthError{comparison_type: :max, error_type: :length_error, message: "should be at most 1 character(s)", path: ["input", "user", "email"], reference: 1},
@@ -105,7 +99,9 @@ defmodule CoseDellaVitaEx.Helpers do
 
   @doc """
   Sets the `:success` flag of a response to true if there are no errors, and adds an empty error list if there is no errors field.
+
   ## Examples / doctests
+
       iex> {:ok, %{}} |> format_success_errors()
       {:ok, %{success: true, errors: []}}
       iex> {:ok, %{errors: []}} |> format_success_errors()

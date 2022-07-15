@@ -1,4 +1,8 @@
 defmodule CoseDellaVitaEx.Schema do
+  @moduledoc """
+  Import all CoseDellaVitaEx types into an existing schema.
+  """
+
   defmacro __using__(_opts) do
     quote do
       import_types(CoseDellaVitaEx.GenericTypes)

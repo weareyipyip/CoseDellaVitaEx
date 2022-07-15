@@ -3,7 +3,7 @@ defmodule CoseDellaVitaEx.ErrorTypes do
   Error types. When implemented, makes it possible for clients to query what exactly went wrong
   """
   use Absinthe.Schema.Notation
-  alias CoseDellaVitaEx.ErrorHelpers
+  alias CoseDellaVitaEx.Utils.ErrorHelpers
   require Logger
 
   alias __MODULE__.{
@@ -40,6 +40,9 @@ defmodule CoseDellaVitaEx.ErrorTypes do
   Resolve the type of an "object to identify" (a map or a struct) (that is expected to be an error). The object to identify must either:
    - define an `:error_type` atom that matches a specific Absinthe object type
    - have a `:path` and `:message` to be identified as a `:generic_error` type
+
+   ## Examples / doctests
+
       iex> resolve_error_type(%{error_type: :bicycle_error}, nil)
       :bicycle_error
       iex> resolve_error_type(%{path: ["name"], message: "this is a stupid name"}, nil)
@@ -54,6 +57,13 @@ defmodule CoseDellaVitaEx.ErrorTypes do
 
   @doc """
   Same as `resolve_error_type/2` but the resolved type must be in the allowlist or be downgraded to :generic_error. A warning about the downgrade is logged.
+
+  ## Examples / doctests
+
+      iex> resolve_error_type(%{error_type: :bicycle_error}, nil, [:some_other_error])
+      :generic_error
+      iex> resolve_error_type(%{error_type: :bicycle_error}, nil, [:bicycle_error])
+      :bicycle_error
   """
   @spec resolve_error_type(any, struct(), nil | Enum.t()) :: atom() | nil
   def resolve_error_type(object_to_identify, execution, allowlist) do
@@ -73,6 +83,10 @@ defmodule CoseDellaVitaEx.ErrorTypes do
 
   @doc """
   Translate changeset errors into `CoseDellaVitaEx.ErrorTypes.*` structs that are translated into specific, typed GraphQL data-errors.
+
+  ## Examples / doctests
+
+  See `CoseDellaVitaEx.Helpers.add_changeset_errors/5`.
   """
   @spec graphql_changeset_error_traverser(
           {binary, keyword | map},
@@ -88,19 +102,9 @@ defmodule CoseDellaVitaEx.ErrorTypes do
   Generate a default error mapper with optional overrides.
   The error mapper is used to convert Ecto Changeset errors to GraphQL types.
 
-  # Examples
+  ## Examples / doctests
 
-      defmodule MyApp.ErrorMapper do
-        import CodeDellaVitaEx.ErrorTypes
-
-        def map(opts, message) do
-          default_error_mapper(opts, message)
-        end
-
-        def map_custom(opts, message) do
-          {%{custom_validation: :something}, message} -> %SomeCustomError{message: message}
-        end
-    end
+  See `CosaDellaVitaEx.Helpers.add_changeset_errors/5`.
   """
   defmacro default_error_mapper(opts, message, overrides \\ []) do
     clauses =
