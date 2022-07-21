@@ -42,6 +42,14 @@ defmodule CoseDellaVitaEx.Types.GenericTypes do
     field(:errors, list_of(:error))
   end
 
+  @desc "Implementing types have a success boolean and a list of errors"
+  interface :base_mutation_payload do
+    @desc "Is the mutation successful?"
+    field(:success, :boolean)
+    @desc "Possible errors that occurred during the mutation."
+    field(:errors, list_of(:error))
+  end
+
   @desc "Sorting directions for orderBy filter fields."
   enum :order_by_direction do
     value(:asc_nulls_first, as: :asc_nulls_first)
