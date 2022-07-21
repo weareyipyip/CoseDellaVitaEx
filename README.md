@@ -8,7 +8,7 @@ Generic helpers for GraphQL API's.
    ```elixir
    def deps do
      [
-       {:cose_della_vita_ex, "~> 0.0.0+development"}
+       {:cose_della_vita_ex, "~> 0.0.3"}
      ]
    end
    ```
@@ -57,6 +57,14 @@ Convert Ecto changeset errors to GraphQL types.
      end
    end
    ```
+  Or if you do not have any specific errors to resolve you can also use the base mutation type:
+  ```elixir
+  defmodule MyApp.MyTypes
+    object :my_mutation_result do
+      import_fields(:base_mutation_payload)
+    end
+  end
+  ```
 1. Automatically convert Ecto changeset errors in your resolver:
    ```elixir
    defmodule MyApp.MyResolver do
