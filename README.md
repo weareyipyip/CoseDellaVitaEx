@@ -1,20 +1,77 @@
 # CoseDellaVitaEx
 
-**TODO: Add description**
+Generic helpers for GraphQL API's.
 
-## Installation
+## Setup
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `cose_della_vita_ex` to your list of dependencies in `mix.exs`:
+1. Add to your dependencies:
+   ```elixir
+   def deps do
+     [
+       {:cose_della_vita_ex, "~> 0.0.0+development"}
+     ]
+   end
+   ```
+1. Include the generic GraphQL types in your schema:
+   ```elixir
+   defmodule MyApp.Schema do
+     use Absinthe.Schema
+     use CoseDellaVitaEx.Schema
 
-```elixir
-def deps do
-  [
-    {:cose_della_vita_ex, "~> 0.0.0+development"}
-  ]
-end
-```
+     # Your own types here
+   end
+   ```
+1. Create an error mapper:
+   ```elixir
+   defmodule MyApp.ErrorMapper do
+     alias CoseDellaVitaEx.ErrorMapper
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/cose_della_vita_ex>.
+     @behaviour ErrorMapper
+
+     def map(%{custom_validation: :my_validation}, message): %MyError{message: message}
+     # Add more custom errors here, then fall back to the included errors
+     def map(opts, message), do: ErrorMapper.map_default(opts, message)
+   end
+   ```
+
+## Error handling
+
+Convert Ecto changeset errors to GraphQL types.
+
+1. Define possible errors for your mutation, so the client can match on those:
+   *The `generic_error` type will be used as a fallback*
+   ```elixir
+   defmodule MyApp.MyTypes
+     alias CoseDellaVitaEx.Types.ErrorTypes
+
+     @my_mutation_error_types [:my_error]
+
+     union :my_mutation_error do
+       types(unquote(@my_mutation_error_types))
+       resolve_type(&ErrorTypes.resolve_error_type(&1, &2, @my_mutation_error_types))
+     end
+
+     object :my_mutation_result do
+       field(:success, :boolean)
+       field(:errors, list_of(:my_mutation_error))
+     end
+   end
+   ```
+1. Automatically convert Ecto changeset errors in your resolver:
+   ```elixir
+   defmodule MyApp.MyResolver do
+     import CoseDellaVitaEx.Helpers
+
+     alias MyApp.ErrorMapper
+
+     def create(_parent, _fields, _resolution) do
+       with {:ok, my_entity} <- MyDB.insert() do
+         {:ok, %{my_entity: my_entity}}
+       else
+         {:error, %Ecto.Changeset{} = changeset} ->
+           {:ok, add_changeset_errors(%{}, changeset, &ErrorMapper.map/2)}
+       end
+       |> format_success_errors()
+     end
+   end
+   ```
