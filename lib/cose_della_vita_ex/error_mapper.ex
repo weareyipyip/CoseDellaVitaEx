@@ -56,8 +56,16 @@ defmodule CoseDellaVitaEx.ErrorMapper do
   def map_default(%{validation: :length, kind: kind, count: count}, message),
     do: %LengthError{comparison_type: kind, reference: count, message: message}
 
-  def map_default(%{validation: :number, kind: kind, number: number}, message),
-    do: %NumberError{comparison_type: kind, reference: number * 1.0, message: message}
+  def map_default(%{validation: :number, kind: kind, number: number}, message) do
+    ref_as_float =
+      case number do
+        d = %Decimal{} -> Decimal.to_float(d)
+        n when is_integer(n) -> n * 1.0
+        float -> float
+      end
+
+    %NumberError{comparison_type: kind, reference: ref_as_float, message: message}
+  end
 
   def map_default(%{validation: :required}, _message), do: %RequiredError{}
   def map_default(%{validation: :inclusion}, _message), do: %InclusionError{}
