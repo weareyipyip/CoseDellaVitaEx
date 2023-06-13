@@ -51,4 +51,24 @@ defmodule CoseDellaVitaEx.Helpers.MacroHelpers do
       end
     end
   end
+
+  @doc """
+  Add boilerplate for pagination (`limit` and `offset` fields).
+
+  Types can be overriden:
+
+      add_pagination_fields(limit_type: :small_integer)
+  """
+  defmacro add_pagination_fields(opts \\ []) do
+    limit_type = Keyword.get(opts, :limit_type, :integer)
+    offset_type = Keyword.get(opts, :offset_type, :integer)
+
+    quote do
+      @desc "Limit results to N items."
+      field(:limit, unquote(limit_type))
+
+      @desc "Skip N items."
+      field(:offset, unquote(offset_type))
+    end
+  end
 end
