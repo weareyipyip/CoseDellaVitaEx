@@ -22,6 +22,7 @@ defmodule CoseDellaVitaEx.Schema do
       import_types(CoseDellaVitaEx.Errors.TokenInvalidError)
       import_types(CoseDellaVitaEx.Errors.UniqueConstraintError)
       import_types(CoseDellaVitaEx.Errors.WrongPasswordError)
+      import_types(CoseDellaVitaEx.Errors.AssociationExistsError)
     end
   end
 end

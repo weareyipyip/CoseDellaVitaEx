@@ -16,7 +16,8 @@ defmodule CoseDellaVitaEx.ErrorMapper do
     TokenInvalidError,
     UniqueConstraintError,
     WrongPasswordError,
-    RequireOneOfError
+    RequireOneOfError,
+    AssociationExistsError
   }
 
   require Logger
@@ -76,6 +77,9 @@ defmodule CoseDellaVitaEx.ErrorMapper do
   def map_default(%{constraint: :unique}, _message), do: %UniqueConstraintError{}
   def map_default(%{constraint: :assoc}, _message), do: %NotFoundError{}
   def map_default(%{constraint: :foreign}, _message), do: %NotFoundError{}
+
+  def map_default(%{constraint: :no_assoc, constraint_name: constraint_name}, _message),
+    do: %AssociationExistsError{constraint_name: constraint_name}
 
   def map_default(opts, message) do
     Logger.warning(
